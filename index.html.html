@@ -44,7 +44,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -259,7 +260,7 @@ button {
 
 .tracker-table {
   width: 100%;
-  min-width: 1910px;
+  min-width: 2160px;
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -270,7 +271,7 @@ button {
 }
 
 .tracker-table col.event-col {
-  width: 137px;
+  width: 158px;
 }
 
 .tracker-table th,
@@ -305,6 +306,38 @@ button {
   font-weight: 800;
 }
 
+.tracker-table .event-name-input {
+  width: calc(100% - 12px);
+  height: 30px;
+  margin: 5px 6px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+  color: #18351c;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.tracker-table .event-name-input::placeholder {
+  color: #18351c;
+  opacity: 1;
+  font-weight: 850;
+}
+
+.tracker-table .event-name-input:hover,
+.tracker-table .event-name-input:focus {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(63,111,69,0.36);
+  box-shadow: none;
+}
+
+.tracker-table input.formatted-input {
+  font-variant-numeric: tabular-nums;
+}
+
 .tracker-table .top-metric {
   color: #18351c;
   background: var(--green-mid);
@@ -336,7 +369,8 @@ button {
 }
 
 .tracker-table input,
-.tracker-table select {
+.tracker-table select,
+.tracker-table textarea {
   width: 100%;
   height: 41px;
   border: 0;
@@ -351,14 +385,43 @@ button {
 }
 
 .tracker-table input:focus,
-.tracker-table select:focus {
+.tracker-table select:focus,
+.tracker-table textarea:focus {
   background: var(--green-pale);
   box-shadow: inset 0 0 0 2px rgba(95, 143, 89, 0.5);
 }
 
-.tracker-table input::placeholder {
+.tracker-table input::placeholder,
+.tracker-table textarea::placeholder {
   color: #a1aaa0;
   font-weight: 450;
+}
+
+.tracker-table textarea {
+  resize: none;
+  overflow: hidden;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.tracker-table .topic-row th,
+.tracker-table .topic-row td {
+  height: 52px;
+}
+
+.tracker-table .topic-row textarea {
+  height: auto;
+  min-height: 31px;
+  max-height: 48px;
+  padding: 6px 7px;
+  field-sizing: content;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: break-word;
+  vertical-align: middle;
 }
 
 .tracker-table .rate-row td,
@@ -417,6 +480,11 @@ button {
 }
 
 .tracker-table td.invalid {
+  background: var(--danger-bg) !important;
+  box-shadow: inset 0 0 0 2px rgba(182, 66, 66, 0.35);
+}
+
+.tracker-table input.date-invalid {
   background: var(--danger-bg) !important;
   box-shadow: inset 0 0 0 2px rgba(182, 66, 66, 0.35);
 }
@@ -679,39 +747,58 @@ button {
 }
 
 .chart-axis-label {
-  fill: #667066;
+  fill: #465346;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.chart-event-title {
+  fill: #314a35;
   font-size: 11px;
+  font-weight: 800;
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.chart-event-date {
+  fill: #697469;
+  font-size: 10px;
+  font-weight: 650;
   font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
 }
 
 .chart-grid-line {
-  stroke: #e0e8de;
-  stroke-width: 1;
+  stroke: #d9e3d6;
+  stroke-width: 1.1;
 }
 
 .chart-axis-line {
-  stroke: #a7b7a3;
-  stroke-width: 1.2;
+  stroke: #81947d;
+  stroke-width: 1.65;
 }
 
 .chart-roi-bar {
   fill: var(--green-deep);
+  stroke: #315d38;
+  stroke-width: 1.1;
 }
 
 .chart-held-bar {
   fill: var(--green-deep);
+  stroke: #315d38;
+  stroke-width: 1.1;
 }
 
 .chart-client-bar {
   fill: var(--green-mid);
   stroke: var(--green-dark);
-  stroke-width: 1;
+  stroke-width: 1.2;
 }
 
 .chart-average-line {
   stroke: #315d38;
-  stroke-width: 2;
-  stroke-dasharray: 7 5;
+  stroke-width: 3;
+  stroke-dasharray: 8 5;
 }
 
 .chart-bar-hover {
@@ -953,13 +1040,13 @@ button {
   const DEFAULT_EVENT_COUNT = 12;
 
   const fieldConfig = {
-    date: { type: "date" },
+    date: { type: "dateText", placeholder: "MM/DD/YYYY" },
     eventType: { type: "select", options: ["", "Dinner Seminar", "Educational Workshop"] },
-    topic: { type: "text", placeholder: "Topic" },
+    topic: { type: "textarea", placeholder: "Topic" },
     venue: { type: "text", placeholder: "Venue" },
-    marketingMethod: { type: "select", options: ["", "Direct Mail", "Digital"] },
-    mailPieces: { type: "number", min: 0, step: 1, placeholder: "0" },
-    digitalAdSpend: { type: "number", min: 0, step: 100, placeholder: "$0" },
+    marketingMethod: { type: "select", options: ["", "Direct Mail", "Digital", "Direct Mail + Digital"] },
+    mailPieces: { type: "number", min: 0, step: 1, placeholder: "—" },
+    digitalAdSpend: { type: "currency", min: 0, placeholder: "—" },
     rsvps: { type: "number", min: 0, step: 1, placeholder: "0" },
     showedUp: { type: "number", min: 0, step: 1, placeholder: "0" },
     businessUnits: { type: "number", min: 0, step: 1, placeholder: "0" },
@@ -968,11 +1055,11 @@ button {
     secondBooked: { type: "number", min: 0, step: 1, placeholder: "0" },
     secondHeld: { type: "number", min: 0, step: 1, placeholder: "0" },
     newClients: { type: "number", min: 0, step: 1, placeholder: "0" },
-    eventCost: { type: "number", min: 0, step: 100, placeholder: "$0" },
-    fiaProduction: { type: "number", min: 0, step: 1000, placeholder: "$0" },
-    aumGathered: { type: "number", min: 0, step: 1000, placeholder: "$0" },
-    avgFiaCommission: { type: "number", min: 0, step: 0.001, placeholder: "7.00%", percentInput: true },
-    avgAumCommission: { type: "number", min: 0, step: 0.001, placeholder: "1.50%", percentInput: true },
+    eventCost: { type: "currency", min: 0, placeholder: "$0" },
+    fiaProduction: { type: "currency", min: 0, placeholder: "$0" },
+    aumGathered: { type: "currency", min: 0, placeholder: "$0" },
+    avgFiaCommission: { type: "percent", min: 0, placeholder: "7.00%" },
+    avgAumCommission: { type: "percent", min: 0, placeholder: "1.50%" },
   };
 
   const tableRows = [
@@ -982,8 +1069,8 @@ button {
     { kind: "input", label: "Topic", field: "topic" },
     { kind: "input", label: "Venue", field: "venue" },
     { kind: "input", label: "Marketing Method", field: "marketingMethod" },
-    { kind: "input", label: "Mail Pieces", field: "mailPieces", conditional: "Direct Mail" },
-    { kind: "input", label: "Digital Ad Spend", field: "digitalAdSpend", conditional: "Digital", currency: true },
+    { kind: "input", label: "Mail Pieces", field: "mailPieces" },
+    { kind: "input", label: "Digital Ad Spend", field: "digitalAdSpend", currency: true },
     { kind: "section", label: "EVENT FUNNEL" },
     { kind: "input", label: "RSVPs", field: "rsvps" },
     { kind: "input", label: "Showed Up", field: "showedUp", compareTo: "rsvps" },
@@ -1016,6 +1103,7 @@ button {
 
   function blankEvent() {
     return {
+      eventName: "",
       date: "",
       eventType: "",
       topic: "",
@@ -1051,7 +1139,24 @@ button {
     if (!candidate || typeof candidate !== "object") return normalized;
     normalized.firmName = typeof candidate.firmName === "string" ? candidate.firmName : "";
     if (Array.isArray(candidate.events) && candidate.events.length) {
-      normalized.events = candidate.events.map((event) => ({ ...blankEvent(), ...(event || {}) }));
+      normalized.events = candidate.events.map((event) => {
+        const merged = { ...blankEvent(), ...(event || {}) };
+        // Migrate commission values saved by earlier versions where users entered
+        // whole percentages (for example 6 for 6%) instead of decimal rates (0.06).
+        ["avgFiaCommission", "avgAumCommission"].forEach((field) => {
+          const parsed = commissionRate(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        ["digitalAdSpend", "eventCost", "fiaProduction", "aumGathered"].forEach((field) => {
+          const parsed = parseCurrencyInput(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        ["mailPieces", "rsvps", "showedUp", "businessUnits", "firstBooked", "firstHeld", "secondBooked", "secondHeld", "newClients"].forEach((field) => {
+          const parsed = num(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        return merged;
+      });
       while (normalized.events.length < DEFAULT_EVENT_COUNT) normalized.events.push(blankEvent());
     }
     return normalized;
@@ -1094,8 +1199,20 @@ button {
 
   function num(value) {
     if (value === "" || value === null || value === undefined) return null;
-    const parsed = Number(value);
+    const cleaned = typeof value === "string" ? value.replace(/[$,\s]/g, "") : value;
+    const parsed = Number(cleaned);
     return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function commissionRate(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const raw = String(value).trim();
+    const hasPercentSign = raw.includes("%");
+    const parsed = Number(raw.replace(/[%,$,\s]/g, ""));
+    if (!Number.isFinite(parsed)) return null;
+    // Stored rates should be decimals (0.06 = 6%), but older versions may
+    // contain whole percentages or strings such as "6%". Accept all of them.
+    return hasPercentSign || parsed > 1 ? parsed / 100 : parsed;
   }
 
   function rate(numerator, denominator) {
@@ -1106,11 +1223,13 @@ button {
   }
 
   function calculations(event) {
-    const fia = num(event.fiaProduction);
-    const aum = num(event.aumGathered);
-    const fiaComm = num(event.avgFiaCommission);
-    const aumComm = num(event.avgAumCommission);
-    const cost = num(event.eventCost);
+    // Parse each event independently so every column calculates correctly,
+    // including data saved by earlier versions with $ / commas / % symbols.
+    const fia = parseCurrencyInput(event.fiaProduction);
+    const aum = parseCurrencyInput(event.aumGathered);
+    const fiaComm = commissionRate(event.avgFiaCommission);
+    const aumComm = commissionRate(event.avgAumCommission);
+    const cost = parseCurrencyInput(event.eventCost);
     const firstHeld = num(event.firstHeld);
     const newClients = num(event.newClients);
 
@@ -1157,16 +1276,77 @@ button {
     return `${Math.round(value * 100)}%`;
   }
 
+  function parseCurrencyInput(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const cleaned = String(value).replace(/[$,\s]/g, "");
+    if (cleaned === "" || cleaned === "." || cleaned === "-") return null;
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function formatCurrencyInput(value) {
+    const parsed = num(value);
+    return parsed === null ? "" : new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(parsed);
+  }
+
+  function parsePercentInput(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const cleaned = String(value).replace(/[%\s]/g, "");
+    if (cleaned === "" || cleaned === "." || cleaned === "-") return null;
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed / 100 : null;
+  }
+
+  function formatPercentInput(value) {
+    const parsed = num(value);
+    return parsed === null ? "" : `${(parsed * 100).toFixed(2)}%`;
+  }
+
+  function normalizeDateInput(value) {
+    if (!value) return "";
+    const raw = String(value).trim();
+
+    // Backward compatibility with dates saved by the original HTML date control.
+    let match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    let year; let month; let day;
+    if (match) {
+      year = Number(match[1]);
+      month = Number(match[2]);
+      day = Number(match[3]);
+    } else {
+      match = raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2}|\d{4})$/);
+      if (!match) return null;
+      month = Number(match[1]);
+      day = Number(match[2]);
+      year = Number(match[3]);
+      if (year < 100) year += 2000;
+    }
+
+    if (year < 1900 || year > 2200 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+    const check = new Date(Date.UTC(year, month - 1, day));
+    if (check.getUTCFullYear() !== year || check.getUTCMonth() !== month - 1 || check.getUTCDate() !== day) return null;
+    return `${month}/${day}/${year}`;
+  }
+
+  function dateForInput(value) {
+    if (!value) return "";
+    return normalizeDateInput(value) || String(value);
+  }
+
   function formatDate(dateString) {
     if (!dateString) return "";
-    const parts = dateString.split("-");
-    if (parts.length !== 3) return dateString;
-    const [y, m, d] = parts;
+    const normalized = normalizeDateInput(dateString);
+    if (!normalized) return String(dateString);
+    const [m, d, y] = normalized.split("/");
     return `${Number(m)}/${Number(d)}/${String(y).slice(-2)}`;
   }
 
   function eventIsUsed(event) {
-    return Boolean(event.date || event.eventType || event.topic || event.venue || event.rsvps || event.eventCost || event.fiaProduction || event.aumGathered);
+    return Boolean(event.eventName || event.date || event.eventType || event.topic || event.venue || event.rsvps || event.eventCost || event.fiaProduction || event.aumGathered);
   }
 
   function eventHasDate(event) {
@@ -1189,35 +1369,77 @@ button {
         if (option === current) opt.selected = true;
         el.appendChild(opt);
       });
+    } else if (cfg.type === "textarea") {
+      el = document.createElement("textarea");
+      el.rows = 1;
+      el.value = current;
+      if (cfg.placeholder) el.placeholder = cfg.placeholder;
     } else {
       el = document.createElement("input");
-      el.type = cfg.type;
-      if (cfg.placeholder) el.placeholder = cfg.placeholder;
-      if (cfg.min !== undefined) el.min = cfg.min;
-      if (cfg.step !== undefined) el.step = cfg.step;
-      if (cfg.type === "number") {
-        if (cfg.percentInput && current !== "" && current !== null && current !== undefined) {
-          el.value = Number(current) * 100;
-        } else {
-          el.value = current;
-        }
+      el.type = cfg.type === "number" ? "number" : "text";
+      if (cfg.type === "dateText") {
+        el.inputMode = "numeric";
+        el.autocomplete = "off";
+        el.value = dateForInput(current);
+      } else if (cfg.type === "currency") {
+        el.inputMode = "decimal";
+        el.classList.add("formatted-input");
+        el.value = formatCurrencyInput(current);
+        el.addEventListener("focus", () => {
+          const stored = state.events[eventIndex][field];
+          el.value = stored === "" || stored === null || stored === undefined ? "" : String(stored);
+          requestAnimationFrame(() => el.select());
+        });
+        el.addEventListener("blur", () => {
+          el.value = formatCurrencyInput(state.events[eventIndex][field]);
+          refreshDerivedCells(eventIndex);
+          renderDashboard();
+        });
+      } else if (cfg.type === "percent") {
+        el.inputMode = "decimal";
+        el.classList.add("formatted-input");
+        el.value = formatPercentInput(current);
+        el.addEventListener("focus", () => {
+          const stored = num(state.events[eventIndex][field]);
+          el.value = stored === null ? "" : String(Number((stored * 100).toFixed(4)));
+          requestAnimationFrame(() => el.select());
+        });
+        el.addEventListener("blur", () => {
+          el.value = formatPercentInput(state.events[eventIndex][field]);
+          refreshDerivedCells(eventIndex);
+          renderDashboard();
+        });
       } else {
+        if (cfg.placeholder) el.placeholder = cfg.placeholder;
+        if (cfg.min !== undefined) el.min = cfg.min;
+        if (cfg.step !== undefined) el.step = cfg.step;
         el.value = current;
       }
+      if (cfg.placeholder) el.placeholder = cfg.placeholder;
     }
 
     el.dataset.eventIndex = String(eventIndex);
     el.dataset.field = field;
-    el.setAttribute("aria-label", `Event ${eventIndex + 1} ${row.label}`);
-
-    if (row.conditional) {
-      const active = event.marketingMethod === row.conditional;
-      el.disabled = !active;
-      if (!active) el.classList.add("inactive-input");
-    }
+    el.setAttribute("aria-label", `${state.events[eventIndex].eventName || `Event ${eventIndex + 1}`} ${row.label}`);
 
     el.addEventListener("input", handleFieldChange);
     el.addEventListener("change", handleFieldChange);
+    if (cfg.type === "dateText") {
+      el.addEventListener("blur", () => {
+        const normalized = normalizeDateInput(el.value);
+        if (el.value.trim() && normalized === null) {
+          el.classList.add("date-invalid");
+          el.title = "Enter the date as MM/DD/YYYY, for example 10/08/2026.";
+          return;
+        }
+        el.classList.remove("date-invalid");
+        el.title = "";
+        state.events[eventIndex][field] = normalized || "";
+        el.value = normalized || "";
+        scheduleSave();
+        renderDashboard();
+      });
+    }
     return el;
   }
 
@@ -1229,31 +1451,26 @@ button {
     let value = el.value;
 
     if (cfg.type === "number") {
-      if (value === "") {
-        value = "";
-      } else if (cfg.percentInput) {
-        value = Number(value) / 100;
-      } else {
-        value = Number(value);
-      }
+      value = value === "" ? "" : Number(value);
+    } else if (cfg.type === "currency") {
+      const parsed = parseCurrencyInput(value);
+      value = parsed === null ? "" : parsed;
+    } else if (cfg.type === "percent") {
+      const parsed = parsePercentInput(value);
+      value = parsed === null ? "" : parsed;
+    } else if (cfg.type === "dateText") {
+      // Preserve what the user is typing. It is validated and normalized on blur.
+      value = el.value;
     }
 
     state.events[eventIndex][field] = value;
 
-    if (field === "marketingMethod") {
-      if (value === "Direct Mail") state.events[eventIndex].digitalAdSpend = "";
-      if (value === "Digital") state.events[eventIndex].mailPieces = "";
-    }
-
     scheduleSave();
 
-    // Keep typing smooth: rebuilding the whole tracker on every keystroke
-    // would replace the active input and steal focus. Rebuild only when a
-    // field is committed, or immediately when Marketing Method changes
-    // because that controls which marketing input is enabled.
-    if (field === "marketingMethod" || event.type === "change") {
-      renderTracker();
-    }
+    // Refresh the calculated cells in this event column immediately. This keeps
+    // every event column independent and prevents later columns from missing
+    // Estimated Revenue, Net Revenue, ROI, or Revenue / New Client updates.
+    refreshDerivedCells(eventIndex);
     renderDashboard();
   }
 
@@ -1278,10 +1495,22 @@ button {
     metricHeader.className = "metric-cell top-metric";
     metricHeader.textContent = "EVENT DETAILS";
     headerRow.appendChild(metricHeader);
-    state.events.forEach((_, index) => {
+    state.events.forEach((eventData, index) => {
       const th = document.createElement("th");
       th.className = "event-header";
-      th.textContent = `Event ${index + 1}`;
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "event-name-input";
+      nameInput.value = eventData.eventName || "";
+      nameInput.placeholder = `Event ${index + 1}`;
+      nameInput.maxLength = 40;
+      nameInput.setAttribute("aria-label", `Rename Event ${index + 1}`);
+      nameInput.title = "Click to rename this event";
+      nameInput.addEventListener("input", () => {
+        state.events[index].eventName = nameInput.value;
+        scheduleSave();
+      });
+      th.appendChild(nameInput);
       headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
@@ -1294,6 +1523,7 @@ button {
       const tr = document.createElement("tr");
       if (row.kind === "section") tr.className = "section-row";
       if (row.kind === "rate") tr.classList.add("rate-row");
+      if (row.field === "topic") tr.classList.add("topic-row");
       if (row.key) tr.classList.add("key-row");
       if (row.roi) tr.classList.add("roi-row");
 
@@ -1326,12 +1556,23 @@ button {
             const value = rate(eventData[row.numerator], eventData[row.denominator]);
             const div = document.createElement("div");
             div.className = "calculated-value";
+            div.id = `derived-rate-${eventIndex}-${row.numerator}-${row.denominator}`;
+            div.dataset.derivedEventIndex = String(eventIndex);
+            div.dataset.derivedKind = "rate";
+            div.dataset.numerator = row.numerator;
+            div.dataset.denominator = row.denominator;
             div.textContent = value === null ? "--" : formatPercent(value, 1);
             td.appendChild(div);
           } else if (row.kind === "calc") {
             const calc = calculations(eventData)[row.calc];
             const div = document.createElement("div");
             div.className = "calculated-value";
+            div.id = `derived-calc-${eventIndex}-${row.calc}`;
+            div.dataset.derivedEventIndex = String(eventIndex);
+            div.dataset.derivedKind = "calc";
+            div.dataset.calc = row.calc;
+            div.dataset.currency = row.currency ? "true" : "false";
+            div.dataset.percent = row.percent ? "true" : "false";
             if (row.currency) div.textContent = calc === null ? "--" : formatCurrency(calc);
             else if (row.percent) div.textContent = calc === null ? "--" : formatPercent(calc, 1);
             else div.textContent = calc ?? "--";
@@ -1345,6 +1586,39 @@ button {
 
     table.appendChild(tbody);
     return table;
+  }
+
+  function refreshDerivedCells(eventIndex) {
+    const eventData = state.events[eventIndex];
+    if (!eventData) return;
+
+    trackerWrap.querySelectorAll(`[data-derived-event-index="${eventIndex}"]`).forEach((div) => {
+      if (div.dataset.derivedKind === "rate") {
+        const value = rate(eventData[div.dataset.numerator], eventData[div.dataset.denominator]);
+        div.textContent = value === null ? "--" : formatPercent(value, 1);
+        return;
+      }
+
+      if (div.dataset.derivedKind === "calc") {
+        const calc = calculations(eventData)[div.dataset.calc];
+        if (div.dataset.currency === "true") div.textContent = calc === null ? "--" : formatCurrency(calc);
+        else if (div.dataset.percent === "true") div.textContent = calc === null ? "--" : formatPercent(calc, 1);
+        else div.textContent = calc ?? "--";
+      }
+    });
+
+    // Refresh subtle funnel guardrails for this event without rebuilding the table.
+    tableRows.forEach((row) => {
+      if (row.kind !== "input" || !row.compareTo) return;
+      const input = trackerWrap.querySelector(`[data-event-index="${eventIndex}"][data-field="${row.field}"]`);
+      const cell = input ? input.closest("td") : null;
+      if (!cell) return;
+      const current = num(eventData[row.field]);
+      const previous = num(eventData[row.compareTo]);
+      const invalid = current !== null && previous !== null && current > previous;
+      cell.classList.toggle("invalid", invalid);
+      cell.title = invalid ? `${row.label} cannot exceed the prior funnel stage.` : "";
+    });
   }
 
   function renderTracker() {
@@ -1430,6 +1704,33 @@ button {
     return el;
   }
 
+  function chartEventTitle(event, index) {
+    const raw = String(event.eventName || `Event ${index + 1}`).trim();
+    return raw.length > 22 ? `${raw.slice(0, 21).trim()}…` : raw;
+  }
+
+  function appendChartEventLabel(svg, x, title, date, titleY, dense = false) {
+    const titleLabel = svgEl("text", {
+      x,
+      y: titleY,
+      class: "chart-event-title",
+      "text-anchor": "middle",
+    });
+    if (dense) titleLabel.setAttribute("font-size", "9.5");
+    titleLabel.textContent = title;
+    svg.appendChild(titleLabel);
+
+    const dateLabel = svgEl("text", {
+      x,
+      y: titleY + 16,
+      class: "chart-event-date",
+      "text-anchor": "middle",
+    });
+    if (dense) dateLabel.setAttribute("font-size", "9");
+    dateLabel.textContent = date;
+    svg.appendChild(dateLabel);
+  }
+
   function showTooltip(event, html) {
     tooltip.innerHTML = html;
     tooltip.style.display = "block";
@@ -1467,7 +1768,12 @@ button {
 
   function renderRoiChart() {
     const data = activeEvents()
-      .map(({ event, calc }) => ({ date: formatDate(event.date), roi: calc.roi }))
+      .map(({ event, index, calc }) => ({
+        title: chartEventTitle(event, index),
+        fullTitle: event.eventName || `Event ${index + 1}`,
+        date: formatDate(event.date),
+        roi: calc.roi,
+      }))
       .filter((item) => item.roi !== null && Number.isFinite(item.roi));
 
     if (!data.length) {
@@ -1482,7 +1788,7 @@ button {
     const { min, max, step } = niceRoiAxis(data.map((d) => d.roi));
     const width = 820;
     const height = 410;
-    const margin = { top: 20, right: 20, bottom: 72, left: 68 };
+    const margin = { top: 20, right: 20, bottom: 82, left: 70 };
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
     const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}`, role: "img", "aria-label": "ROI by event chart" });
@@ -1501,7 +1807,7 @@ button {
     svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: margin.top + plotH, y2: margin.top + plotH, class: "chart-axis-line" }));
 
     const slot = plotW / data.length;
-    const barW = Math.min(54, slot * 0.48);
+    const barW = Math.min(68, slot * 0.60);
     const baselineValue = min < 0 ? 0 : min;
     const baseline = y(baselineValue);
 
@@ -1515,21 +1821,20 @@ button {
         y: rectY,
         width: barW,
         height: rectHeight,
-        rx: 3,
+        rx: 6,
         class: "chart-roi-bar",
       });
-      addTooltipHandlers(rect, `<strong>${item.date}</strong><br>ROI: ${formatPercent(item.roi, 1)}`);
+      addTooltipHandlers(rect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>ROI: ${formatPercent(item.roi, 1)}`);
       svg.appendChild(rect);
 
-      const label = svgEl("text", {
-        x: margin.left + slot * index + slot / 2,
-        y: margin.top + plotH + 25,
-        class: "chart-axis-label",
-        "text-anchor": "end",
-        transform: `rotate(-42 ${margin.left + slot * index + slot / 2} ${margin.top + plotH + 25})`,
-      });
-      label.textContent = item.date;
-      svg.appendChild(label);
+      appendChartEventLabel(
+        svg,
+        margin.left + slot * index + slot / 2,
+        item.title,
+        item.date,
+        margin.top + plotH + 27,
+        data.length > 7
+      );
     });
 
     if (average >= min && average <= max) {
@@ -1558,7 +1863,9 @@ button {
 
   function renderConversionChart() {
     const data = activeEvents()
-      .map(({ event }) => ({
+      .map(({ event, index }) => ({
+        title: chartEventTitle(event, index),
+        fullTitle: event.eventName || `Event ${index + 1}`,
         date: formatDate(event.date),
         held: num(event.firstHeld) || 0,
         clients: num(event.newClients) || 0,
@@ -1573,7 +1880,7 @@ button {
     const axis = niceCountAxis(maxValue);
     const width = 820;
     const height = 410;
-    const margin = { top: 20, right: 20, bottom: 72, left: 58 };
+    const margin = { top: 20, right: 20, bottom: 82, left: 62 };
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
     const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}`, role: "img", "aria-label": "First appointments held and new clients by event" });
@@ -1591,8 +1898,9 @@ button {
     svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: margin.top + plotH, y2: margin.top + plotH, class: "chart-axis-line" }));
 
     const slot = plotW / data.length;
-    const groupW = Math.min(76, slot * 0.68);
-    const barW = Math.max(8, (groupW - 8) / 2);
+    const groupW = Math.min(96, slot * 0.80);
+    const barGap = 7;
+    const barW = Math.max(9, (groupW - barGap) / 2);
     const baseline = y(0);
 
     data.forEach((item, index) => {
@@ -1605,32 +1913,31 @@ button {
         y: heldY,
         width: barW,
         height: Math.max(1, baseline - heldY),
-        rx: 3,
+        rx: 6,
         class: "chart-held-bar",
       });
-      addTooltipHandlers(heldRect, `<strong>${item.date}</strong><br>1st Appointments Held: ${item.held}`);
+      addTooltipHandlers(heldRect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>1st Appointments Held: ${item.held}`);
       svg.appendChild(heldRect);
 
       const clientRect = svgEl("rect", {
-        x: groupX + barW + 8,
+        x: groupX + barW + barGap,
         y: clientY,
         width: barW,
         height: Math.max(1, baseline - clientY),
-        rx: 3,
+        rx: 6,
         class: "chart-client-bar",
       });
-      addTooltipHandlers(clientRect, `<strong>${item.date}</strong><br>New Clients: ${item.clients}`);
+      addTooltipHandlers(clientRect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>New Clients: ${item.clients}`);
       svg.appendChild(clientRect);
 
-      const label = svgEl("text", {
-        x: margin.left + slot * index + slot / 2,
-        y: margin.top + plotH + 25,
-        class: "chart-axis-label",
-        "text-anchor": "end",
-        transform: `rotate(-42 ${margin.left + slot * index + slot / 2} ${margin.top + plotH + 25})`,
-      });
-      label.textContent = item.date;
-      svg.appendChild(label);
+      appendChartEventLabel(
+        svg,
+        margin.left + slot * index + slot / 2,
+        item.title,
+        item.date,
+        margin.top + plotH + 27,
+        data.length > 7
+      );
     });
 
     conversionChartHost.innerHTML = "";
