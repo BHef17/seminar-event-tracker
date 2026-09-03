@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Seminar and live event performance tracker for conversion, production, and ROI analysis." />
+  <title>Seminar & Live Event Performance Tracker</title>
+  <style>
+:root {
+  --green-dark: #5f8f59;
+  --green-deep: #3f6f45;
+  --green-mid: #a8c98f;
+  --green-light: #ddebd7;
+  --green-pale: #f1f7ed;
+  --green-ghost: #f7faf5;
+  --ink: #1f1f1f;
+  --muted: #677267;
+  --line: #c8d8c4;
+  --line-strong: #9eb69a;
+  --white: #ffffff;
+  --danger: #b64242;
+  --danger-bg: #fff1f1;
+  --shadow: 0 12px 34px rgba(39, 74, 39, 0.08);
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #f4f7f2;
+  color: var(--ink);
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(168, 201, 143, 0.15), transparent 28%),
+    #f4f7f2;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: min(1900px, calc(100% - 40px));
+  margin: 20px auto 44px;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 28px;
+  align-items: stretch;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.brand-block {
+  padding: 28px 34px 26px;
+  background: linear-gradient(110deg, var(--green-light), #eef6ea 72%, #ffffff);
+  border-right: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin-bottom: 8px;
+  color: var(--green-deep);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.brand-block h1 {
+  margin: 0;
+  font-family: Aptos Display, Aptos, Inter, "Segoe UI", Arial, sans-serif;
+  font-size: clamp(27px, 2.1vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+
+.brand-block p {
+  margin: 9px 0 0;
+  color: #465146;
+  font-size: 14px;
+}
+
+.firm-card {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--white);
+}
+
+.firm-card label {
+  margin-bottom: 7px;
+  color: var(--green-deep);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.firm-card input {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  outline: none;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 650;
+  text-align: center;
+  background: var(--green-ghost);
+  transition: 0.18s ease;
+}
+
+.firm-card input:focus {
+  border-color: var(--green-dark);
+  box-shadow: 0 0 0 3px rgba(95, 143, 89, 0.12);
+  background: var(--white);
+}
+
+.save-status {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.tab-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 9px 10px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 7px 22px rgba(39, 74, 39, 0.05);
+  position: sticky;
+  top: 10px;
+  z-index: 50;
+}
+
+.tab-button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 18px;
+  background: transparent;
+  color: #536053;
+  font-weight: 750;
+}
+
+.tab-button.active {
+  color: #ffffff;
+  background: var(--green-deep);
+  box-shadow: 0 5px 12px rgba(63, 111, 69, 0.18);
+}
+
+.tab-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.primary-button,
+.secondary-button {
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-weight: 750;
+  transition: 0.15s ease;
+}
+
+.primary-button {
+  border: 1px solid var(--green-deep);
+  color: #ffffff;
+  background: var(--green-deep);
+}
+
+.primary-button:hover {
+  background: #315d38;
+}
+
+.secondary-button {
+  border: 1px solid var(--line-strong);
+  color: var(--green-deep);
+  background: var(--white);
+}
+
+.secondary-button:hover {
+  background: var(--green-pale);
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.view {
+  display: none;
+  margin-top: 16px;
+}
+
+.view.active {
+  display: block;
+}
+
+.view-intro,
+.dashboard-title-block {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 26px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.view-intro h2,
+.dashboard-title-block h2 {
+  margin: 0;
+  font-family: Aptos Display, Aptos, Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 25px;
+  letter-spacing: -0.01em;
+}
+
+.view-intro p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tracker-frame {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-top: 0;
+  box-shadow: var(--shadow);
+}
+
+.tracker-table-wrap {
+  overflow-x: auto;
+  scrollbar-color: var(--green-mid) var(--green-pale);
+}
+
+.tracker-table {
+  width: 100%;
+  min-width: 2160px;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.tracker-table col.metric-col {
+  width: 260px;
+}
+
+.tracker-table col.event-col {
+  width: 158px;
+}
+
+.tracker-table th,
+.tracker-table td {
+  border-right: 1px solid #e0e9dd;
+  border-bottom: 1px solid #e5ece3;
+  padding: 0;
+  height: 42px;
+  text-align: center;
+  vertical-align: middle;
+  background: var(--white);
+}
+
+.tracker-table .metric-cell {
+  position: sticky;
+  left: 0;
+  z-index: 8;
+  padding: 0 15px;
+  text-align: left;
+  color: #2a342a;
+  font-size: 12px;
+  font-weight: 650;
+  background: #ffffff;
+  box-shadow: 5px 0 9px rgba(50, 80, 45, 0.03);
+}
+
+.tracker-table .event-header {
+  height: 42px;
+  color: #18351c;
+  background: var(--green-mid);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tracker-table .event-name-input {
+  width: calc(100% - 12px);
+  height: 30px;
+  margin: 5px 6px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+  color: #18351c;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.tracker-table .event-name-input::placeholder {
+  color: #18351c;
+  opacity: 1;
+  font-weight: 850;
+}
+
+.tracker-table .event-name-input:hover,
+.tracker-table .event-name-input:focus {
+  background: rgba(255,255,255,0.55);
+  border-color: rgba(63,111,69,0.36);
+  box-shadow: none;
+}
+
+.tracker-table input.formatted-input {
+  font-variant-numeric: tabular-nums;
+}
+
+.tracker-table .top-metric {
+  color: #18351c;
+  background: var(--green-mid);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tracker-table .section-row th,
+.tracker-table .section-row td {
+  height: 36px;
+  background: var(--green-deep);
+  border-bottom-color: var(--green-deep);
+}
+
+.tracker-table .section-row th {
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  padding-left: 15px;
+  color: #ffffff;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+
+.tracker-table .section-fill {
+  color: transparent;
+}
+
+.tracker-table input,
+.tracker-table select,
+.tracker-table textarea {
+  width: 100%;
+  height: 41px;
+  border: 0;
+  outline: 0;
+  padding: 6px 7px;
+  background: transparent;
+  color: var(--ink);
+  text-align: center;
+  text-align-last: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tracker-table input:focus,
+.tracker-table select:focus,
+.tracker-table textarea:focus {
+  background: var(--green-pale);
+  box-shadow: inset 0 0 0 2px rgba(95, 143, 89, 0.5);
+}
+
+.tracker-table input::placeholder,
+.tracker-table textarea::placeholder {
+  color: #a1aaa0;
+  font-weight: 450;
+}
+
+.tracker-table textarea {
+  resize: none;
+  overflow: hidden;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.tracker-table .topic-row th,
+.tracker-table .topic-row td {
+  height: 52px;
+}
+
+.tracker-table .topic-row textarea {
+  height: auto;
+  min-height: 31px;
+  max-height: 48px;
+  padding: 6px 7px;
+  field-sizing: content;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: break-word;
+  vertical-align: middle;
+}
+
+.tracker-table .rate-row td,
+.tracker-table .rate-row .metric-cell {
+  height: 34px;
+  background: var(--green-ghost);
+  color: #657065;
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.tracker-table .rate-row .metric-cell {
+  padding-left: 28px;
+  font-style: italic;
+}
+
+.tracker-table .calculated-value {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tracker-table .key-row td,
+.tracker-table .key-row .metric-cell {
+  background: var(--green-light);
+}
+
+.tracker-table .key-row .metric-cell {
+  color: #234c2b;
+  font-weight: 850;
+}
+
+.tracker-table .key-row input {
+  font-weight: 850;
+}
+
+.tracker-table .roi-row td,
+.tracker-table .roi-row .metric-cell {
+  background: #e7f1e2;
+}
+
+.tracker-table .roi-row .metric-cell,
+.tracker-table .roi-row .calculated-value {
+  color: #234c2b;
+  font-weight: 850;
+}
+
+.tracker-table .inactive-input {
+  background: #f3f5f2 !important;
+  color: #b0b6af !important;
+}
+
+.tracker-table td.invalid {
+  background: var(--danger-bg) !important;
+  box-shadow: inset 0 0 0 2px rgba(182, 66, 66, 0.35);
+}
+
+.tracker-table input.date-invalid {
+  background: var(--danger-bg) !important;
+  box-shadow: inset 0 0 0 2px rgba(182, 66, 66, 0.35);
+}
+
+.tracker-footnote {
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--green-ghost);
+  color: #657065;
+  font-size: 11px;
+  text-align: center;
+}
+
+.dashboard-title-block {
+  align-items: center;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  background: linear-gradient(110deg, var(--green-light), #f5faf2 76%, #ffffff);
+  box-shadow: var(--shadow);
+}
+
+.dashboard-firm {
+  min-height: 22px;
+  color: var(--green-deep);
+  font-family: Aptos Display, Aptos, Inter, "Segoe UI", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.kpi-card {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(48, 80, 45, 0.05);
+}
+
+.kpi-label {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 8px;
+  background: var(--green-deep);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  text-align: center;
+}
+
+.kpi-value {
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  color: var(--ink);
+  font-family: Aptos Display, Aptos, Inter, "Segoe UI", Arial, sans-serif;
+  font-size: clamp(18px, 1.7vw, 29px);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.dashboard-section {
+  margin-top: 16px;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.section-band,
+.chart-card-header {
+  background: var(--green-mid);
+  color: #1f3a22;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.055em;
+}
+
+.section-band {
+  padding: 10px 14px;
+  text-align: center;
+  border-bottom: 2px solid var(--green-dark);
+}
+
+.comparison-wrap {
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  min-width: 1450px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.comparison-table th,
+.comparison-table td {
+  border-bottom: 1px solid #e4ebe2;
+  padding: 9px 10px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+}
+
+.comparison-table th {
+  background: var(--green-pale);
+  font-weight: 850;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.comparison-table th:nth-child(3),
+.comparison-table th:nth-child(4) {
+  width: 16%;
+}
+
+.comparison-table td:nth-child(3),
+.comparison-table td:nth-child(4) {
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.comparison-table tbody tr:nth-child(even) td {
+  background: var(--green-ghost);
+}
+
+.comparison-table tbody tr.empty-row td {
+  color: #c0c6bf;
+}
+
+.comparison-empty-row td {
+  padding: 28px 12px !important;
+  color: #879187;
+  font-size: 12px !important;
+  font-weight: 650;
+  text-align: center;
+  background: #ffffff !important;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.chart-card {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.chart-card-header {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--green-dark);
+}
+
+.chart-card-header-stacked {
+  flex-wrap: wrap;
+}
+
+.chart-stat {
+  color: #27492b;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  color: #335036;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 2px;
+}
+
+.legend-swatch.held {
+  background: var(--green-deep);
+}
+
+.legend-swatch.clients {
+  background: var(--green-mid);
+  border: 1px solid var(--green-dark);
+}
+
+.chart-host {
+  position: relative;
+  width: 100%;
+  min-height: 430px;
+  padding: 12px 14px 10px;
+  background: #ffffff;
+}
+
+.chart-host svg {
+  display: block;
+  width: 100%;
+  height: 410px;
+  overflow: visible;
+}
+
+.chart-empty {
+  min-height: 410px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8b958a;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.chart-tooltip {
+  position: fixed;
+  z-index: 1000;
+  display: none;
+  pointer-events: none;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(31, 31, 31, 0.93);
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+}
+
+.chart-axis-label {
+  fill: #465346;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.chart-event-title {
+  fill: #314a35;
+  font-size: 11px;
+  font-weight: 800;
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.chart-event-date {
+  fill: #697469;
+  font-size: 10px;
+  font-weight: 650;
+  font-family: Aptos, Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.chart-grid-line {
+  stroke: #d9e3d6;
+  stroke-width: 1.1;
+}
+
+.chart-axis-line {
+  stroke: #81947d;
+  stroke-width: 1.65;
+}
+
+.chart-roi-bar {
+  fill: var(--green-deep);
+  stroke: #315d38;
+  stroke-width: 1.1;
+}
+
+.chart-held-bar {
+  fill: var(--green-deep);
+  stroke: #315d38;
+  stroke-width: 1.1;
+}
+
+.chart-client-bar {
+  fill: var(--green-mid);
+  stroke: var(--green-dark);
+  stroke-width: 1.2;
+}
+
+.chart-average-line {
+  stroke: #315d38;
+  stroke-width: 3;
+  stroke-dasharray: 8 5;
+}
+
+.chart-bar-hover {
+  transition: opacity 0.12s ease;
+}
+
+.chart-bar-hover:hover {
+  opacity: 0.78;
+}
+
+@media (max-width: 1320px) {
+  .kpi-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-host svg {
+    height: 450px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    width: min(100% - 22px, 1900px);
+    margin-top: 11px;
+  }
+
+  .app-header {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .brand-block {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 22px 22px 20px;
+  }
+
+  .firm-card {
+    padding: 18px 22px;
+  }
+
+  .tab-nav {
+    flex-wrap: wrap;
+    position: static;
+  }
+
+  .tab-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .tab-actions .secondary-button {
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .view-intro,
+  .dashboard-title-block {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .dashboard-firm {
+    font-size: 16px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .comparison-table {
+    min-width: 1180px;
+  }
+
+  .chart-host {
+    min-height: 360px;
+    padding-inline: 6px;
+  }
+
+  .chart-host svg {
+    height: 350px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-block h1 {
+    font-size: 27px;
+  }
+
+  .tab-button {
+    flex: 1;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .kpi-value {
+    min-height: 60px;
+    font-size: 20px;
+  }
+
+  .chart-card-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chart-legend {
+    flex-wrap: wrap;
+  }
+}
+
+.demo-banner {
+  width: 100%;
+  padding: 7px 12px;
+  background: #315d38;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-block">
+        <div class="eyebrow">ADVISOR EVENT PERFORMANCE</div>
+        <h1>Seminar &amp; Live Event Performance Tracker</h1>
+        <p>Track event performance, conversion, production, and ROI in one clear view.</p>
+      </div>
+
+      <div class="firm-card">
+        <label for="firm-name">FIRM</label>
+        <input id="firm-name" type="text" placeholder="Enter firm name" autocomplete="organization" />
+        <span id="save-status" class="save-status">Saved locally</span>
+      </div>
+    </header>
+
+    <nav class="tab-nav" aria-label="Application views">
+      <button class="tab-button active" data-tab="tracker" type="button">Event Tracker</button>
+      <button class="tab-button" data-tab="dashboard" type="button">Dashboard</button>
+      <div class="tab-actions">
+        <button id="export-button" class="secondary-button" type="button">Export Data</button>
+        <label class="secondary-button file-button" for="import-file">Import Data</label>
+        <input id="import-file" type="file" accept="application/json,.json" hidden />
+      </div>
+    </nav>
+
+    <main>
+      <section id="tracker-view" class="view active" aria-labelledby="tracker-heading">
+        <div class="view-intro">
+          <div>
+            <h2 id="tracker-heading">Event Tracker</h2>
+            <p>Enter one event per column. Conversion rates, estimated revenue, ROI, and dashboard metrics calculate automatically.</p>
+          </div>
+          <button id="add-event-button" class="primary-button" type="button">+ Add Event</button>
+        </div>
+
+        <div class="tracker-frame">
+          <div id="tracker-table-wrap" class="tracker-table-wrap"></div>
+        </div>
+
+        <div class="tracker-footnote">
+          Estimated Revenue combines FIA commission revenue with one year of annual AUM revenue. All ROI outputs update automatically.
+        </div>
+      </section>
+
+      <section id="dashboard-view" class="view" aria-labelledby="dashboard-heading">
+        <div class="dashboard-title-block">
+          <h2 id="dashboard-heading">Event Performance Dashboard</h2>
+          <div id="dashboard-firm" class="dashboard-firm"></div>
+        </div>
+
+        <div id="kpi-grid" class="kpi-grid"></div>
+
+        <section class="dashboard-section">
+          <div class="section-band">EVENT COMPARISON</div>
+          <div class="comparison-wrap">
+            <table class="comparison-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Event Type</th>
+                  <th>Topic</th>
+                  <th>Venue</th>
+                  <th>1st Appts Held</th>
+                  <th>New Clients</th>
+                  <th>FIA Production</th>
+                  <th>AUM Gathered</th>
+                  <th>Estimated Revenue</th>
+                  <th>ROI</th>
+                </tr>
+              </thead>
+              <tbody id="comparison-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="charts-grid">
+          <article class="chart-card">
+            <div class="chart-card-header">
+              <span>ROI BY EVENT</span>
+              <span id="average-roi-label" class="chart-stat">Average ROI: --</span>
+            </div>
+            <div id="roi-chart" class="chart-host"></div>
+          </article>
+
+          <article class="chart-card">
+            <div class="chart-card-header chart-card-header-stacked">
+              <span>1ST APPOINTMENTS HELD &amp; NEW CLIENTS</span>
+              <div class="chart-legend" aria-label="Chart legend">
+                <span><i class="legend-swatch held"></i>1st Appointments Held</span>
+                <span><i class="legend-swatch clients"></i>New Clients</span>
+              </div>
+            </div>
+            <div id="conversion-chart" class="chart-host"></div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div id="chart-tooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
+  <script>
+(() => {
+  "use strict";
+
+  const STORAGE_KEY = "ae-seminar-event-performance-v1";
+  const DEFAULT_EVENT_COUNT = 12;
+
+  const fieldConfig = {
+    date: { type: "dateText", placeholder: "MM/DD/YYYY" },
+    eventType: { type: "select", options: ["", "Dinner Seminar", "Educational Workshop"] },
+    topic: { type: "textarea", placeholder: "Topic" },
+    venue: { type: "text", placeholder: "Venue" },
+    marketingMethod: { type: "select", options: ["", "Direct Mail", "Digital", "Direct Mail + Digital"] },
+    mailPieces: { type: "number", min: 0, step: 1, placeholder: "—" },
+    digitalAdSpend: { type: "currency", min: 0, placeholder: "—" },
+    rsvps: { type: "number", min: 0, step: 1, placeholder: "0" },
+    showedUp: { type: "number", min: 0, step: 1, placeholder: "0" },
+    businessUnits: { type: "number", min: 0, step: 1, placeholder: "0" },
+    firstBooked: { type: "number", min: 0, step: 1, placeholder: "0" },
+    firstHeld: { type: "number", min: 0, step: 1, placeholder: "0" },
+    secondBooked: { type: "number", min: 0, step: 1, placeholder: "0" },
+    secondHeld: { type: "number", min: 0, step: 1, placeholder: "0" },
+    newClients: { type: "number", min: 0, step: 1, placeholder: "0" },
+    eventCost: { type: "currency", min: 0, placeholder: "$0" },
+    fiaProduction: { type: "currency", min: 0, placeholder: "$0" },
+    aumGathered: { type: "currency", min: 0, placeholder: "$0" },
+    avgFiaCommission: { type: "percent", min: 0, placeholder: "7.00%" },
+    avgAumCommission: { type: "percent", min: 0, placeholder: "1.50%" },
+  };
+
+  const tableRows = [
+    { kind: "section", label: "EVENT DETAILS" },
+    { kind: "input", label: "Date", field: "date" },
+    { kind: "input", label: "Event Type", field: "eventType" },
+    { kind: "input", label: "Topic", field: "topic" },
+    { kind: "input", label: "Venue", field: "venue" },
+    { kind: "input", label: "Marketing Method", field: "marketingMethod" },
+    { kind: "input", label: "Mail Pieces", field: "mailPieces" },
+    { kind: "input", label: "Digital Ad Spend", field: "digitalAdSpend", currency: true },
+    { kind: "section", label: "EVENT FUNNEL" },
+    { kind: "input", label: "RSVPs", field: "rsvps" },
+    { kind: "input", label: "Showed Up", field: "showedUp", compareTo: "rsvps" },
+    { kind: "rate", label: "Show Rate (% of RSVPs)", numerator: "showedUp", denominator: "rsvps" },
+    { kind: "input", label: "Business Units", field: "businessUnits", compareTo: "showedUp" },
+    { kind: "rate", label: "Business Unit Rate (% of Attendees)", numerator: "businessUnits", denominator: "showedUp" },
+    { kind: "input", label: "1st Appointments Booked", field: "firstBooked", compareTo: "businessUnits" },
+    { kind: "rate", label: "Booking Rate (% of Business Units)", numerator: "firstBooked", denominator: "businessUnits" },
+    { kind: "input", label: "1st Appointments Held", field: "firstHeld", compareTo: "firstBooked", key: true },
+    { kind: "rate", label: "Hold Rate (% of 1st Appointments Booked)", numerator: "firstHeld", denominator: "firstBooked" },
+    { kind: "input", label: "2nd Appointments Booked", field: "secondBooked", compareTo: "firstHeld" },
+    { kind: "rate", label: "Booking Rate (% of 1st Appointments Held)", numerator: "secondBooked", denominator: "firstHeld" },
+    { kind: "input", label: "2nd Appointments Held", field: "secondHeld", compareTo: "secondBooked" },
+    { kind: "rate", label: "Hold Rate (% of 2nd Appointments Booked)", numerator: "secondHeld", denominator: "secondBooked" },
+    { kind: "input", label: "New Clients Onboarded", field: "newClients", compareTo: "secondHeld", key: true },
+    { kind: "rate", label: "Conversion Rate (% of 2nd Appointments Held)", numerator: "newClients", denominator: "secondHeld" },
+    { kind: "section", label: "PRODUCTION & ROI" },
+    { kind: "input", label: "Total Event Cost", field: "eventCost", currency: true },
+    { kind: "input", label: "FIA Production", field: "fiaProduction", currency: true },
+    { kind: "input", label: "AUM Gathered", field: "aumGathered", currency: true },
+    { kind: "input", label: "Avg FIA Commission", field: "avgFiaCommission", percentInput: true },
+    { kind: "input", label: "Avg AUM Commission", field: "avgAumCommission", percentInput: true },
+    { kind: "calc", label: "Estimated Revenue", calc: "estimatedRevenue", currency: true },
+    { kind: "calc", label: "Net Revenue", calc: "netRevenue", currency: true },
+    { kind: "calc", label: "ROI", calc: "roi", percent: true, roi: true },
+    { kind: "calc", label: "Cost / 1st Appointment Held", calc: "costPerFirstHeld", currency: true },
+    { kind: "calc", label: "Cost / New Client", calc: "costPerNewClient", currency: true },
+    { kind: "calc", label: "Revenue / New Client", calc: "revenuePerNewClient", currency: true },
+  ];
+
+  function blankEvent() {
+    return {
+      eventName: "",
+      date: "",
+      eventType: "",
+      topic: "",
+      venue: "",
+      marketingMethod: "",
+      mailPieces: "",
+      digitalAdSpend: "",
+      rsvps: "",
+      showedUp: "",
+      businessUnits: "",
+      firstBooked: "",
+      firstHeld: "",
+      secondBooked: "",
+      secondHeld: "",
+      newClients: "",
+      eventCost: "",
+      fiaProduction: "",
+      aumGathered: "",
+      avgFiaCommission: "",
+      avgAumCommission: "",
+    };
+  }
+
+  function initialState() {
+    return {
+      firmName: "",
+      events: Array.from({ length: DEFAULT_EVENT_COUNT }, blankEvent),
+    };
+  }
+
+  function normalizeState(candidate) {
+    const normalized = initialState();
+    if (!candidate || typeof candidate !== "object") return normalized;
+    normalized.firmName = typeof candidate.firmName === "string" ? candidate.firmName : "";
+    if (Array.isArray(candidate.events) && candidate.events.length) {
+      normalized.events = candidate.events.map((event) => {
+        const merged = { ...blankEvent(), ...(event || {}) };
+        // Migrate commission values saved by earlier versions where users entered
+        // whole percentages (for example 6 for 6%) instead of decimal rates (0.06).
+        ["avgFiaCommission", "avgAumCommission"].forEach((field) => {
+          const parsed = commissionRate(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        ["digitalAdSpend", "eventCost", "fiaProduction", "aumGathered"].forEach((field) => {
+          const parsed = parseCurrencyInput(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        ["mailPieces", "rsvps", "showedUp", "businessUnits", "firstBooked", "firstHeld", "secondBooked", "secondHeld", "newClients"].forEach((field) => {
+          const parsed = num(merged[field]);
+          merged[field] = parsed === null ? "" : parsed;
+        });
+        return merged;
+      });
+      while (normalized.events.length < DEFAULT_EVENT_COUNT) normalized.events.push(blankEvent());
+    }
+    return normalized;
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? normalizeState(JSON.parse(raw)) : initialState();
+    } catch (error) {
+      console.warn("Could not load saved data", error);
+      return initialState();
+    }
+  }
+
+  let state = loadState();
+  let saveTimer = null;
+
+  const firmInput = document.getElementById("firm-name");
+  const dashboardFirm = document.getElementById("dashboard-firm");
+  const saveStatus = document.getElementById("save-status");
+  const trackerWrap = document.getElementById("tracker-table-wrap");
+  const comparisonBody = document.getElementById("comparison-body");
+  const kpiGrid = document.getElementById("kpi-grid");
+  const roiChartHost = document.getElementById("roi-chart");
+  const conversionChartHost = document.getElementById("conversion-chart");
+  const averageRoiLabel = document.getElementById("average-roi-label");
+  const tooltip = document.getElementById("chart-tooltip");
+
+  firmInput.value = state.firmName;
+
+  function scheduleSave() {
+    saveStatus.textContent = "Saving...";
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      saveStatus.textContent = "Saved locally";
+    }, 250);
+  }
+
+  function num(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const cleaned = typeof value === "string" ? value.replace(/[$,\s]/g, "") : value;
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function commissionRate(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const raw = String(value).trim();
+    const hasPercentSign = raw.includes("%");
+    const parsed = Number(raw.replace(/[%,$,\s]/g, ""));
+    if (!Number.isFinite(parsed)) return null;
+    // Stored rates should be decimals (0.06 = 6%), but older versions may
+    // contain whole percentages or strings such as "6%". Accept all of them.
+    return hasPercentSign || parsed > 1 ? parsed / 100 : parsed;
+  }
+
+  function rate(numerator, denominator) {
+    const n = num(numerator);
+    const d = num(denominator);
+    if (n === null || d === null || d === 0) return null;
+    return n / d;
+  }
+
+  function calculations(event) {
+    // Parse each event independently so every column calculates correctly,
+    // including data saved by earlier versions with $ / commas / % symbols.
+    const fia = parseCurrencyInput(event.fiaProduction);
+    const aum = parseCurrencyInput(event.aumGathered);
+    const fiaComm = commissionRate(event.avgFiaCommission);
+    const aumComm = commissionRate(event.avgAumCommission);
+    const cost = parseCurrencyInput(event.eventCost);
+    const firstHeld = num(event.firstHeld);
+    const newClients = num(event.newClients);
+
+    let estimatedRevenue = null;
+    const hasProduction = fia !== null || aum !== null;
+    const missingRequiredCommission = (fia !== null && fia > 0 && fiaComm === null) || (aum !== null && aum > 0 && aumComm === null);
+    if (hasProduction && !missingRequiredCommission) {
+      estimatedRevenue = (fia || 0) * (fiaComm || 0) + (aum || 0) * (aumComm || 0);
+    }
+
+    const netRevenue = estimatedRevenue !== null && cost !== null ? estimatedRevenue - cost : null;
+    const roi = netRevenue !== null && cost !== null && cost !== 0 ? netRevenue / cost : null;
+    const costPerFirstHeld = cost !== null && firstHeld !== null && firstHeld !== 0 ? cost / firstHeld : null;
+    const costPerNewClient = cost !== null && newClients !== null && newClients !== 0 ? cost / newClients : null;
+    const revenuePerNewClient = estimatedRevenue !== null && newClients !== null && newClients !== 0 ? estimatedRevenue / newClients : null;
+
+    return { estimatedRevenue, netRevenue, roi, costPerFirstHeld, costPerNewClient, revenuePerNewClient };
+  }
+
+  function formatCurrency(value) {
+    if (value === null || value === undefined || !Number.isFinite(value)) return "--";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  function formatCompactCurrency(value) {
+    if (value === null || value === undefined || !Number.isFinite(value)) return "$0";
+    const abs = Math.abs(value);
+    if (abs >= 1000000) return `${value < 0 ? "-" : ""}$${(abs / 1000000).toFixed(abs >= 10000000 ? 0 : 1)}M`;
+    if (abs >= 1000) return `${value < 0 ? "-" : ""}$${(abs / 1000).toFixed(abs >= 100000 ? 0 : 1)}K`;
+    return formatCurrency(value);
+  }
+
+  function formatPercent(value, decimals = 1) {
+    if (value === null || value === undefined || !Number.isFinite(value)) return "--";
+    return `${(value * 100).toFixed(decimals)}%`;
+  }
+
+  function formatWholePercent(value) {
+    if (value === null || value === undefined || !Number.isFinite(value)) return "--";
+    return `${Math.round(value * 100)}%`;
+  }
+
+  function parseCurrencyInput(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const cleaned = String(value).replace(/[$,\s]/g, "");
+    if (cleaned === "" || cleaned === "." || cleaned === "-") return null;
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function formatCurrencyInput(value) {
+    const parsed = num(value);
+    return parsed === null ? "" : new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(parsed);
+  }
+
+  function parsePercentInput(value) {
+    if (value === "" || value === null || value === undefined) return null;
+    const cleaned = String(value).replace(/[%\s]/g, "");
+    if (cleaned === "" || cleaned === "." || cleaned === "-") return null;
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed / 100 : null;
+  }
+
+  function formatPercentInput(value) {
+    const parsed = num(value);
+    return parsed === null ? "" : `${(parsed * 100).toFixed(2)}%`;
+  }
+
+  function normalizeDateInput(value) {
+    if (!value) return "";
+    const raw = String(value).trim();
+
+    // Backward compatibility with dates saved by the original HTML date control.
+    let match = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+    let year; let month; let day;
+    if (match) {
+      year = Number(match[1]);
+      month = Number(match[2]);
+      day = Number(match[3]);
+    } else {
+      match = raw.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2}|\d{4})$/);
+      if (!match) return null;
+      month = Number(match[1]);
+      day = Number(match[2]);
+      year = Number(match[3]);
+      if (year < 100) year += 2000;
+    }
+
+    if (year < 1900 || year > 2200 || month < 1 || month > 12 || day < 1 || day > 31) return null;
+    const check = new Date(Date.UTC(year, month - 1, day));
+    if (check.getUTCFullYear() !== year || check.getUTCMonth() !== month - 1 || check.getUTCDate() !== day) return null;
+    return `${month}/${day}/${year}`;
+  }
+
+  function dateForInput(value) {
+    if (!value) return "";
+    return normalizeDateInput(value) || String(value);
+  }
+
+  function formatDate(dateString) {
+    if (!dateString) return "";
+    const normalized = normalizeDateInput(dateString);
+    if (!normalized) return String(dateString);
+    const [m, d, y] = normalized.split("/");
+    return `${Number(m)}/${Number(d)}/${String(y).slice(-2)}`;
+  }
+
+  function eventIsUsed(event) {
+    return Boolean(event.eventName || event.date || event.eventType || event.topic || event.venue || event.rsvps || event.eventCost || event.fiaProduction || event.aumGathered);
+  }
+
+  function eventHasDate(event) {
+    return Boolean(event.date);
+  }
+
+  function inputElement(eventIndex, row) {
+    const field = row.field;
+    const cfg = fieldConfig[field];
+    const event = state.events[eventIndex];
+    const current = event[field] ?? "";
+    let el;
+
+    if (cfg.type === "select") {
+      el = document.createElement("select");
+      cfg.options.forEach((option) => {
+        const opt = document.createElement("option");
+        opt.value = option;
+        opt.textContent = option || "Select";
+        if (option === current) opt.selected = true;
+        el.appendChild(opt);
+      });
+    } else if (cfg.type === "textarea") {
+      el = document.createElement("textarea");
+      el.rows = 1;
+      el.value = current;
+      if (cfg.placeholder) el.placeholder = cfg.placeholder;
+    } else {
+      el = document.createElement("input");
+      el.type = cfg.type === "number" ? "number" : "text";
+      if (cfg.type === "dateText") {
+        el.inputMode = "numeric";
+        el.autocomplete = "off";
+        el.value = dateForInput(current);
+      } else if (cfg.type === "currency") {
+        el.inputMode = "decimal";
+        el.classList.add("formatted-input");
+        el.value = formatCurrencyInput(current);
+        el.addEventListener("focus", () => {
+          const stored = state.events[eventIndex][field];
+          el.value = stored === "" || stored === null || stored === undefined ? "" : String(stored);
+          requestAnimationFrame(() => el.select());
+        });
+        el.addEventListener("blur", () => {
+          el.value = formatCurrencyInput(state.events[eventIndex][field]);
+          refreshDerivedCells(eventIndex);
+          renderDashboard();
+        });
+      } else if (cfg.type === "percent") {
+        el.inputMode = "decimal";
+        el.classList.add("formatted-input");
+        el.value = formatPercentInput(current);
+        el.addEventListener("focus", () => {
+          const stored = num(state.events[eventIndex][field]);
+          el.value = stored === null ? "" : String(Number((stored * 100).toFixed(4)));
+          requestAnimationFrame(() => el.select());
+        });
+        el.addEventListener("blur", () => {
+          el.value = formatPercentInput(state.events[eventIndex][field]);
+          refreshDerivedCells(eventIndex);
+          renderDashboard();
+        });
+      } else {
+        if (cfg.placeholder) el.placeholder = cfg.placeholder;
+        if (cfg.min !== undefined) el.min = cfg.min;
+        if (cfg.step !== undefined) el.step = cfg.step;
+        el.value = current;
+      }
+      if (cfg.placeholder) el.placeholder = cfg.placeholder;
+    }
+
+    el.dataset.eventIndex = String(eventIndex);
+    el.dataset.field = field;
+    el.setAttribute("aria-label", `${state.events[eventIndex].eventName || `Event ${eventIndex + 1}`} ${row.label}`);
+
+    el.addEventListener("input", handleFieldChange);
+    el.addEventListener("change", handleFieldChange);
+    if (cfg.type === "dateText") {
+      el.addEventListener("blur", () => {
+        const normalized = normalizeDateInput(el.value);
+        if (el.value.trim() && normalized === null) {
+          el.classList.add("date-invalid");
+          el.title = "Enter the date as MM/DD/YYYY, for example 10/08/2026.";
+          return;
+        }
+        el.classList.remove("date-invalid");
+        el.title = "";
+        state.events[eventIndex][field] = normalized || "";
+        el.value = normalized || "";
+        scheduleSave();
+        renderDashboard();
+      });
+    }
+    return el;
+  }
+
+  function handleFieldChange(event) {
+    const el = event.currentTarget;
+    const eventIndex = Number(el.dataset.eventIndex);
+    const field = el.dataset.field;
+    const cfg = fieldConfig[field];
+    let value = el.value;
+
+    if (cfg.type === "number") {
+      value = value === "" ? "" : Number(value);
+    } else if (cfg.type === "currency") {
+      const parsed = parseCurrencyInput(value);
+      value = parsed === null ? "" : parsed;
+    } else if (cfg.type === "percent") {
+      const parsed = parsePercentInput(value);
+      value = parsed === null ? "" : parsed;
+    } else if (cfg.type === "dateText") {
+      // Preserve what the user is typing. It is validated and normalized on blur.
+      value = el.value;
+    }
+
+    state.events[eventIndex][field] = value;
+
+    scheduleSave();
+
+    // Refresh the calculated cells in this event column immediately. This keeps
+    // every event column independent and prevents later columns from missing
+    // Estimated Revenue, Net Revenue, ROI, or Revenue / New Client updates.
+    refreshDerivedCells(eventIndex);
+    renderDashboard();
+  }
+
+  function buildTrackerTable() {
+    const table = document.createElement("table");
+    table.className = "tracker-table";
+
+    const colgroup = document.createElement("colgroup");
+    const metricCol = document.createElement("col");
+    metricCol.className = "metric-col";
+    colgroup.appendChild(metricCol);
+    state.events.forEach(() => {
+      const col = document.createElement("col");
+      col.className = "event-col";
+      colgroup.appendChild(col);
+    });
+    table.appendChild(colgroup);
+
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
+    const metricHeader = document.createElement("th");
+    metricHeader.className = "metric-cell top-metric";
+    metricHeader.textContent = "EVENT DETAILS";
+    headerRow.appendChild(metricHeader);
+    state.events.forEach((eventData, index) => {
+      const th = document.createElement("th");
+      th.className = "event-header";
+      const nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "event-name-input";
+      nameInput.value = eventData.eventName || "";
+      nameInput.placeholder = `Event ${index + 1}`;
+      nameInput.maxLength = 40;
+      nameInput.setAttribute("aria-label", `Rename Event ${index + 1}`);
+      nameInput.title = "Click to rename this event";
+      nameInput.addEventListener("input", () => {
+        state.events[index].eventName = nameInput.value;
+        scheduleSave();
+      });
+      th.appendChild(nameInput);
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+
+    tableRows.forEach((row, rowIndex) => {
+      if (row.kind === "section" && rowIndex === 0) return;
+      const tr = document.createElement("tr");
+      if (row.kind === "section") tr.className = "section-row";
+      if (row.kind === "rate") tr.classList.add("rate-row");
+      if (row.field === "topic") tr.classList.add("topic-row");
+      if (row.key) tr.classList.add("key-row");
+      if (row.roi) tr.classList.add("roi-row");
+
+      const th = document.createElement("th");
+      th.className = "metric-cell";
+      th.textContent = row.kind === "rate" ? `  ${row.label}` : row.label;
+      tr.appendChild(th);
+
+      if (row.kind === "section") {
+        const fill = document.createElement("td");
+        fill.colSpan = state.events.length;
+        fill.className = "section-fill";
+        fill.textContent = ".";
+        tr.appendChild(fill);
+      } else {
+        state.events.forEach((eventData, eventIndex) => {
+          const td = document.createElement("td");
+          if (row.kind === "input") {
+            const el = inputElement(eventIndex, row);
+            td.appendChild(el);
+            if (row.compareTo) {
+              const current = num(eventData[row.field]);
+              const previous = num(eventData[row.compareTo]);
+              if (current !== null && previous !== null && current > previous) {
+                td.classList.add("invalid");
+                td.title = `${row.label} cannot exceed the prior funnel stage.`;
+              }
+            }
+          } else if (row.kind === "rate") {
+            const value = rate(eventData[row.numerator], eventData[row.denominator]);
+            const div = document.createElement("div");
+            div.className = "calculated-value";
+            div.id = `derived-rate-${eventIndex}-${row.numerator}-${row.denominator}`;
+            div.dataset.derivedEventIndex = String(eventIndex);
+            div.dataset.derivedKind = "rate";
+            div.dataset.numerator = row.numerator;
+            div.dataset.denominator = row.denominator;
+            div.textContent = value === null ? "--" : formatPercent(value, 1);
+            td.appendChild(div);
+          } else if (row.kind === "calc") {
+            const calc = calculations(eventData)[row.calc];
+            const div = document.createElement("div");
+            div.className = "calculated-value";
+            div.id = `derived-calc-${eventIndex}-${row.calc}`;
+            div.dataset.derivedEventIndex = String(eventIndex);
+            div.dataset.derivedKind = "calc";
+            div.dataset.calc = row.calc;
+            div.dataset.currency = row.currency ? "true" : "false";
+            div.dataset.percent = row.percent ? "true" : "false";
+            if (row.currency) div.textContent = calc === null ? "--" : formatCurrency(calc);
+            else if (row.percent) div.textContent = calc === null ? "--" : formatPercent(calc, 1);
+            else div.textContent = calc ?? "--";
+            td.appendChild(div);
+          }
+          tr.appendChild(td);
+        });
+      }
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    return table;
+  }
+
+  function refreshDerivedCells(eventIndex) {
+    const eventData = state.events[eventIndex];
+    if (!eventData) return;
+
+    trackerWrap.querySelectorAll(`[data-derived-event-index="${eventIndex}"]`).forEach((div) => {
+      if (div.dataset.derivedKind === "rate") {
+        const value = rate(eventData[div.dataset.numerator], eventData[div.dataset.denominator]);
+        div.textContent = value === null ? "--" : formatPercent(value, 1);
+        return;
+      }
+
+      if (div.dataset.derivedKind === "calc") {
+        const calc = calculations(eventData)[div.dataset.calc];
+        if (div.dataset.currency === "true") div.textContent = calc === null ? "--" : formatCurrency(calc);
+        else if (div.dataset.percent === "true") div.textContent = calc === null ? "--" : formatPercent(calc, 1);
+        else div.textContent = calc ?? "--";
+      }
+    });
+
+    // Refresh subtle funnel guardrails for this event without rebuilding the table.
+    tableRows.forEach((row) => {
+      if (row.kind !== "input" || !row.compareTo) return;
+      const input = trackerWrap.querySelector(`[data-event-index="${eventIndex}"][data-field="${row.field}"]`);
+      const cell = input ? input.closest("td") : null;
+      if (!cell) return;
+      const current = num(eventData[row.field]);
+      const previous = num(eventData[row.compareTo]);
+      const invalid = current !== null && previous !== null && current > previous;
+      cell.classList.toggle("invalid", invalid);
+      cell.title = invalid ? `${row.label} cannot exceed the prior funnel stage.` : "";
+    });
+  }
+
+  function renderTracker() {
+    trackerWrap.innerHTML = "";
+    trackerWrap.appendChild(buildTrackerTable());
+  }
+
+  function activeEvents() {
+    return state.events
+      .map((event, index) => ({ event, index, calc: calculations(event) }))
+      .filter(({ event }) => eventHasDate(event));
+  }
+
+  function kpis() {
+    const events = activeEvents();
+    const sum = (selector) => events.reduce((total, item) => total + (selector(item) || 0), 0);
+    const totalCost = sum(({ event }) => num(event.eventCost));
+    const estimatedRevenue = sum(({ calc }) => calc.estimatedRevenue);
+    const overallRoi = totalCost > 0 ? (estimatedRevenue - totalCost) / totalCost : null;
+    return [
+      { label: "TOTAL EVENTS", value: String(events.length) },
+      { label: "1ST APPTS HELD", value: String(sum(({ event }) => num(event.firstHeld))) },
+      { label: "NEW CLIENTS", value: String(sum(({ event }) => num(event.newClients))) },
+      { label: "FIA PRODUCTION", value: formatCompactCurrency(sum(({ event }) => num(event.fiaProduction))) },
+      { label: "AUM GATHERED", value: formatCompactCurrency(sum(({ event }) => num(event.aumGathered))) },
+      { label: "ESTIMATED REVENUE", value: formatCompactCurrency(estimatedRevenue) },
+      { label: "OVERALL ROI", value: overallRoi === null ? "--" : formatWholePercent(overallRoi) },
+    ];
+  }
+
+  function renderKpis() {
+    kpiGrid.innerHTML = "";
+    kpis().forEach((item) => {
+      const card = document.createElement("div");
+      card.className = "kpi-card";
+      card.innerHTML = `<div class="kpi-label">${item.label}</div><div class="kpi-value">${item.value}</div>`;
+      kpiGrid.appendChild(card);
+    });
+  }
+
+  function renderComparison() {
+    comparisonBody.innerHTML = "";
+    const usedEvents = state.events.filter(eventIsUsed);
+
+    if (!usedEvents.length) {
+      const row = document.createElement("tr");
+      row.className = "comparison-empty-row";
+      const cell = document.createElement("td");
+      cell.colSpan = 10;
+      cell.textContent = "Event comparison populates as event data is entered.";
+      row.appendChild(cell);
+      comparisonBody.appendChild(row);
+      return;
+    }
+
+    usedEvents.forEach((event) => {
+      const calc = calculations(event);
+      const row = document.createElement("tr");
+      const values = [
+        formatDate(event.date),
+        event.eventType || "--",
+        event.topic || "--",
+        event.venue || "--",
+        num(event.firstHeld) ?? "--",
+        num(event.newClients) ?? "--",
+        num(event.fiaProduction) === null ? "--" : formatCurrency(num(event.fiaProduction)),
+        num(event.aumGathered) === null ? "--" : formatCurrency(num(event.aumGathered)),
+        calc.estimatedRevenue === null ? "--" : formatCurrency(calc.estimatedRevenue),
+        calc.roi === null ? "--" : formatPercent(calc.roi, 1),
+      ];
+      values.forEach((value) => {
+        const td = document.createElement("td");
+        td.textContent = value;
+        row.appendChild(td);
+      });
+      comparisonBody.appendChild(row);
+    });
+  }
+
+  function svgEl(tag, attrs = {}) {
+    const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+    Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, String(value)));
+    return el;
+  }
+
+  function chartEventTitle(event, index) {
+    const raw = String(event.eventName || `Event ${index + 1}`).trim();
+    return raw.length > 22 ? `${raw.slice(0, 21).trim()}…` : raw;
+  }
+
+  function appendChartEventLabel(svg, x, title, date, titleY, dense = false) {
+    const titleLabel = svgEl("text", {
+      x,
+      y: titleY,
+      class: "chart-event-title",
+      "text-anchor": "middle",
+    });
+    if (dense) titleLabel.setAttribute("font-size", "9.5");
+    titleLabel.textContent = title;
+    svg.appendChild(titleLabel);
+
+    const dateLabel = svgEl("text", {
+      x,
+      y: titleY + 16,
+      class: "chart-event-date",
+      "text-anchor": "middle",
+    });
+    if (dense) dateLabel.setAttribute("font-size", "9");
+    dateLabel.textContent = date;
+    svg.appendChild(dateLabel);
+  }
+
+  function showTooltip(event, html) {
+    tooltip.innerHTML = html;
+    tooltip.style.display = "block";
+    tooltip.style.left = `${event.clientX + 12}px`;
+    tooltip.style.top = `${event.clientY + 12}px`;
+  }
+
+  function hideTooltip() {
+    tooltip.style.display = "none";
+  }
+
+  function addTooltipHandlers(element, html) {
+    element.classList.add("chart-bar-hover");
+    element.addEventListener("mousemove", (event) => showTooltip(event, html));
+    element.addEventListener("mouseleave", hideTooltip);
+  }
+
+  function renderEmptyChart(host) {
+    host.innerHTML = '<div class="chart-empty">Charts populate as event data is entered.</div>';
+  }
+
+  function niceRoiAxis(rois) {
+    const minRoi = Math.min(...rois);
+    const maxRoi = Math.max(...rois);
+    const min = minRoi < 0 ? Math.floor(minRoi) : (minRoi < 1 ? 0 : 1);
+    let max = Math.ceil(Math.max(maxRoi, min + 1));
+    if (Math.abs(maxRoi - max) < 0.02) max += 1;
+    const range = max - min;
+    let step = 1;
+    if (range > 16) step = Math.ceil(range / 8);
+    else if (range > 9) step = 2;
+    max = Math.ceil(max / step) * step;
+    return { min, max, step };
+  }
+
+  function renderRoiChart() {
+    const data = activeEvents()
+      .map(({ event, index, calc }) => ({
+        title: chartEventTitle(event, index),
+        fullTitle: event.eventName || `Event ${index + 1}`,
+        date: formatDate(event.date),
+        roi: calc.roi,
+      }))
+      .filter((item) => item.roi !== null && Number.isFinite(item.roi));
+
+    if (!data.length) {
+      averageRoiLabel.textContent = "Average ROI: --";
+      renderEmptyChart(roiChartHost);
+      return;
+    }
+
+    const average = data.reduce((sum, item) => sum + item.roi, 0) / data.length;
+    averageRoiLabel.textContent = `Average ROI: ${formatWholePercent(average)}`;
+
+    const { min, max, step } = niceRoiAxis(data.map((d) => d.roi));
+    const width = 820;
+    const height = 410;
+    const margin = { top: 20, right: 20, bottom: 82, left: 70 };
+    const plotW = width - margin.left - margin.right;
+    const plotH = height - margin.top - margin.bottom;
+    const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}`, role: "img", "aria-label": "ROI by event chart" });
+
+    const y = (value) => margin.top + ((max - value) / (max - min)) * plotH;
+
+    for (let tick = min; tick <= max + 0.0001; tick += step) {
+      const yy = y(tick);
+      svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: yy, y2: yy, class: "chart-grid-line" }));
+      const label = svgEl("text", { x: margin.left - 10, y: yy + 4, "text-anchor": "end", class: "chart-axis-label" });
+      label.textContent = `${Math.round(tick * 100)}%`;
+      svg.appendChild(label);
+    }
+
+    svg.appendChild(svgEl("line", { x1: margin.left, x2: margin.left, y1: margin.top, y2: margin.top + plotH, class: "chart-axis-line" }));
+    svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: margin.top + plotH, y2: margin.top + plotH, class: "chart-axis-line" }));
+
+    const slot = plotW / data.length;
+    const barW = Math.min(68, slot * 0.60);
+    const baselineValue = min < 0 ? 0 : min;
+    const baseline = y(baselineValue);
+
+    data.forEach((item, index) => {
+      const x = margin.left + slot * index + (slot - barW) / 2;
+      const valueY = y(item.roi);
+      const rectY = item.roi >= baselineValue ? valueY : baseline;
+      const rectHeight = Math.max(1, Math.abs(baseline - valueY));
+      const rect = svgEl("rect", {
+        x,
+        y: rectY,
+        width: barW,
+        height: rectHeight,
+        rx: 6,
+        class: "chart-roi-bar",
+      });
+      addTooltipHandlers(rect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>ROI: ${formatPercent(item.roi, 1)}`);
+      svg.appendChild(rect);
+
+      appendChartEventLabel(
+        svg,
+        margin.left + slot * index + slot / 2,
+        item.title,
+        item.date,
+        margin.top + plotH + 27,
+        data.length > 7
+      );
+    });
+
+    if (average >= min && average <= max) {
+      const avgY = y(average);
+      svg.appendChild(svgEl("line", {
+        x1: margin.left,
+        x2: width - margin.right,
+        y1: avgY,
+        y2: avgY,
+        class: "chart-average-line",
+      }));
+    }
+
+    roiChartHost.innerHTML = "";
+    roiChartHost.appendChild(svg);
+  }
+
+  function niceCountAxis(maxValue) {
+    if (maxValue <= 10) return { max: Math.max(10, Math.ceil(maxValue / 2) * 2), step: 2 };
+    if (maxValue <= 25) return { max: Math.ceil(maxValue / 5) * 5, step: 5 };
+    if (maxValue <= 60) return { max: Math.ceil(maxValue / 10) * 10, step: 10 };
+    if (maxValue <= 120) return { max: Math.ceil(maxValue / 20) * 20, step: 20 };
+    const step = Math.ceil(maxValue / 6 / 10) * 10;
+    return { max: Math.ceil(maxValue / step) * step, step };
+  }
+
+  function renderConversionChart() {
+    const data = activeEvents()
+      .map(({ event, index }) => ({
+        title: chartEventTitle(event, index),
+        fullTitle: event.eventName || `Event ${index + 1}`,
+        date: formatDate(event.date),
+        held: num(event.firstHeld) || 0,
+        clients: num(event.newClients) || 0,
+      }));
+
+    if (!data.length) {
+      renderEmptyChart(conversionChartHost);
+      return;
+    }
+
+    const maxValue = Math.max(...data.flatMap((item) => [item.held, item.clients]), 0);
+    const axis = niceCountAxis(maxValue);
+    const width = 820;
+    const height = 410;
+    const margin = { top: 20, right: 20, bottom: 82, left: 62 };
+    const plotW = width - margin.left - margin.right;
+    const plotH = height - margin.top - margin.bottom;
+    const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}`, role: "img", "aria-label": "First appointments held and new clients by event" });
+    const y = (value) => margin.top + ((axis.max - value) / axis.max) * plotH;
+
+    for (let tick = 0; tick <= axis.max + 0.0001; tick += axis.step) {
+      const yy = y(tick);
+      svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: yy, y2: yy, class: "chart-grid-line" }));
+      const label = svgEl("text", { x: margin.left - 10, y: yy + 4, "text-anchor": "end", class: "chart-axis-label" });
+      label.textContent = String(tick);
+      svg.appendChild(label);
+    }
+
+    svg.appendChild(svgEl("line", { x1: margin.left, x2: margin.left, y1: margin.top, y2: margin.top + plotH, class: "chart-axis-line" }));
+    svg.appendChild(svgEl("line", { x1: margin.left, x2: width - margin.right, y1: margin.top + plotH, y2: margin.top + plotH, class: "chart-axis-line" }));
+
+    const slot = plotW / data.length;
+    const groupW = Math.min(96, slot * 0.80);
+    const barGap = 7;
+    const barW = Math.max(9, (groupW - barGap) / 2);
+    const baseline = y(0);
+
+    data.forEach((item, index) => {
+      const groupX = margin.left + slot * index + (slot - groupW) / 2;
+      const heldY = y(item.held);
+      const clientY = y(item.clients);
+
+      const heldRect = svgEl("rect", {
+        x: groupX,
+        y: heldY,
+        width: barW,
+        height: Math.max(1, baseline - heldY),
+        rx: 6,
+        class: "chart-held-bar",
+      });
+      addTooltipHandlers(heldRect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>1st Appointments Held: ${item.held}`);
+      svg.appendChild(heldRect);
+
+      const clientRect = svgEl("rect", {
+        x: groupX + barW + barGap,
+        y: clientY,
+        width: barW,
+        height: Math.max(1, baseline - clientY),
+        rx: 6,
+        class: "chart-client-bar",
+      });
+      addTooltipHandlers(clientRect, `<strong>${item.fullTitle}</strong><br>${item.date}<br>New Clients: ${item.clients}`);
+      svg.appendChild(clientRect);
+
+      appendChartEventLabel(
+        svg,
+        margin.left + slot * index + slot / 2,
+        item.title,
+        item.date,
+        margin.top + plotH + 27,
+        data.length > 7
+      );
+    });
+
+    conversionChartHost.innerHTML = "";
+    conversionChartHost.appendChild(svg);
+  }
+
+  function renderDashboard() {
+    dashboardFirm.textContent = state.firmName || "";
+    renderKpis();
+    renderComparison();
+    renderRoiChart();
+    renderConversionChart();
+  }
+
+  firmInput.addEventListener("input", () => {
+    state.firmName = firmInput.value;
+    scheduleSave();
+    renderDashboard();
+  });
+
+  document.querySelectorAll(".tab-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".tab-button").forEach((btn) => btn.classList.toggle("active", btn === button));
+      const target = button.dataset.tab;
+      document.getElementById("tracker-view").classList.toggle("active", target === "tracker");
+      document.getElementById("dashboard-view").classList.toggle("active", target === "dashboard");
+      if (target === "dashboard") renderDashboard();
+    });
+  });
+
+  document.getElementById("add-event-button").addEventListener("click", () => {
+    state.events.push(blankEvent());
+    scheduleSave();
+    renderTracker();
+    renderDashboard();
+    requestAnimationFrame(() => {
+      const wrap = document.querySelector(".tracker-table-wrap");
+      wrap.scrollLeft = wrap.scrollWidth;
+    });
+  });
+
+  document.getElementById("export-button").addEventListener("click", () => {
+    const payload = JSON.stringify(state, null, 2);
+    const blob = new Blob([payload], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    const safeFirm = (state.firmName || "event-performance").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
+    anchor.href = url;
+    anchor.download = `${safeFirm || "event-performance"}-event-data.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("import-file").addEventListener("change", async (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      state = normalizeState(JSON.parse(text));
+      firmInput.value = state.firmName;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderTracker();
+      renderDashboard();
+      saveStatus.textContent = "Imported and saved";
+      setTimeout(() => { saveStatus.textContent = "Saved locally"; }, 1400);
+    } catch (error) {
+      alert("That file could not be imported. Please select a data file exported from this tracker.");
+    } finally {
+      event.target.value = "";
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    const dashboardVisible = document.getElementById("dashboard-view").classList.contains("active");
+    if (dashboardVisible) {
+      renderRoiChart();
+      renderConversionChart();
+    }
+  });
+
+  renderTracker();
+  renderDashboard();
+})();
+
+  </script>
+</body>
+</html>
